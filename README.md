@@ -7,7 +7,7 @@ The script does log actions taken, so you will be able to review the changes. Se
 # Short Verion -or- I don't want to read more stuff
 To set credits and exotics to 9999, and talent refund points to 30, download and run [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe)
 
-NOTE: To help prevent potential complications, Icarus should be running and at the title screen when this utilty is used.
+NOTE: To help prevent potential complications, Icarus is required to be running and should be at the title screen when this utilty is used.
 
 -Enjoy!
 # Download types
@@ -23,7 +23,7 @@ NOTE: Be sure to be using either PowerShell or a Command prompt when executing t
 Download [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe)
 
 # Usage
-NOTE: To help prevent potential complications, Icarus should be running and at the title screen when this utilty is used.
+NOTE: To help prevent potential complications, Icarus is required to be running and should be at the title screen when this utilty is used.
 
 ## Running with defaults
 Defaults for values are set to:
