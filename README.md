@@ -12,7 +12,7 @@ NOTE: To help prevent potential complications, Icarus is required to be running 
 -Enjoy!
 # Download types
 ## Python script
-Just clone this reposity, or [download a zip](https://github.com/spafbi/icarus-credits-modifier/archive/refs/tags/latest.zip) of it, and execute the script using Python. Python 3.11.3 was used to create this script, and that's what the Pipfile expects. To set up the environment, navigate on your command-line to the directory where the script was copied/cloned, execute
+Just clone this reposity, or [download a zip](https://github.com/Spafbi/icarus-credits-modifier/archive/refs/heads/main.zip) of it, and execute the script using Python. Python 3.11.3 was used to create this script, and that's what the Pipfile expects. To set up the environment, navigate on your command-line to the directory where the script was copied/cloned, execute
 ```cmd
 pipenv install
 ```
