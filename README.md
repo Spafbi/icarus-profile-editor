@@ -4,7 +4,7 @@ This utility updates Icarus profiles in the current Windows profile with new val
 This utility was created on Windows 11 using Python 3.11.3. It works for me, but your mileage may vary.
 
 The script does log actions taken, so you will be able to review the changes. See *Running with options*, below, to see how to enable more verbose logging.
-# Short Verion -or- I don't want to read more stuff
+# Short Version -or- I don't want to read more stuff
 To set credits and exotics to 9999, and talent refund points to 30, download and run [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe)
 
 NOTE: To help prevent potential complications, Icarus is required to be running and should be at the title screen when this utilty is used.
