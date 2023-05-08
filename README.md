@@ -40,12 +40,12 @@ After setting up the environment (see *Python script* in the *Download types* se
 pipenv run python .\icarus-credits-modifier.py
 ```
 ## Running with options!
-You may also run the script with options! Here's the output from my personal system when the script was run with `-h` to show all available options:
+You may also run the script with options! Here's the output from running with `-h` to show all available options:
 ```txt
 usage: icarus-credits-modifier.py [-h] [-c CREDITS] [-e EXOTICS] [-r REFUND] [-s STEAM] [-v]
 
-icarus-credits-modifier.py sets credits and exotics to 9999, and talent refund points to 30, for all Steam accounts located in
-C:\Users\spafb\AppData\Local\Icarus\Saved\PlayerData.
+icarus-credits-modifier.py sets credits and exotics to 9999, and talent refund points to 30, for
+all Steam accounts located in %LOCALAPPDATA%\Icarus\Saved\PlayerData.
 
 options:
   -h, --help            show this help message and exit
@@ -56,7 +56,9 @@ options:
   -r REFUND, --refund REFUND
                         The number of talent refund credits you want to have
   -s STEAM, --steam STEAM
-                        This option may be specified to alter a single account, identified by its SteamID64, for which you wish to set values. Omitting this option defaults to all SteamID64 accounts in C:\Users\spafb\AppData\Local\Icarus\Saved\PlayerData
+                        This option may be specified to alter a single account, identified by its
+                        SteamID64, for which you wish to set values. Omitting this option defaults
+                        to all SteamID64 accounts in %LOCALAPPDATA%\Icarus\Saved\PlayerData
   -v, --verbose         Verbose logging
 ```
 Of course, the directory/folder paths will appear different on your system.
