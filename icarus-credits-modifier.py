@@ -172,6 +172,8 @@ def main():
             "Make sure Icarus is running and at the title screen when running this utility.",
         ]
         print_and_log(these_messages)
+        print("Press ENTER/RETURN to continue...")
+        input()
         exit()
 
     # Create a list of Profiles to alter
