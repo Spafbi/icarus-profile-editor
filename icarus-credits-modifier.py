@@ -98,7 +98,8 @@ def main():
 
     # Just grabbing this script's filename
     prog = basename(__file__)
-    description = f"{prog} sets credits and exotics to 9999, and talent refund points to 30, for all Steam accounts located in {icarus_player_data_path}."
+    localappdata_str="%LOCALAPPDATA%"
+    description = f"{prog} sets credits and exotics to 9999, and talent refund points to 30, for all Steam accounts located in {localappdata_str}\Icarus\Saved\PlayerData."
 
     # Set up argparse to help people use this as a CLI utility
     parser = argparse.ArgumentParser(prog=prog, description=description)
@@ -135,8 +136,8 @@ def main():
         "--steam",
         type=str,
         required=False,
-        help=f"This option may be specified to alter a single account, identified by its SteamID64, for which you wish to set values. Omitting this option defaults to all SteamID64 accounts in {icarus_player_data_path}",
-        default="0",
+        help="This option may be specified to alter a single account, identified by its SteamID64, for which you wish to set values. Omitting this option defaults to all SteamID64 accounts in %%LOCALAPPDATA%%\Icarus\Saved\PlayerData",
+        default="__invalid__",
     )
 
     parser.add_argument(
@@ -182,7 +183,7 @@ def main():
 
     # Create a list of Profiles to alter
     steam_id = f"{args.steam}".lower()
-    if not steam_id == "0":
+    if not steam_id == "__invalid__":
         profiles = get_single_profile(icarus_player_data_path, steam_id)
     else:
         profiles = get_profiles(icarus_player_data_path)
