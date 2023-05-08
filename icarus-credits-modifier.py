@@ -98,8 +98,7 @@ def main():
 
     # Just grabbing this script's filename
     prog = basename(__file__)
-    localappdata_str = "%LOCALAPPDATA%"
-    description = f"{prog} sets credits and exotics to 9999, and talent refund points to 30, for all Steam accounts located in {localappdata_str}\Icarus\Saved\PlayerData."
+    description = f"{prog} sets credits and exotics to 9999, and talent refund points to 30, for all Steam accounts located in %LOCALAPPDATA%\Icarus\Saved\PlayerData."
 
     # Set up argparse to help people use this as a CLI utility
     parser = argparse.ArgumentParser(prog=prog, description=description)
