@@ -81,6 +81,11 @@ def print_and_log(messages):
         logging.info(message)
 
 
+def wait_for_it():
+    print("Press ENTER/RETURN to continue...")
+    input()
+
+
 def main():
     """
     Summary: Default method if this modules is run as __main__.
@@ -172,8 +177,7 @@ def main():
             "Make sure Icarus is running and at the title screen when running this utility.",
         ]
         print_and_log(these_messages)
-        print("Press ENTER/RETURN to continue...")
-        input()
+        wait_for_it()
         exit()
 
     # Create a list of Profiles to alter
@@ -189,8 +193,7 @@ def main():
             "No changes have been made.",
         ]
         print_and_log(messages)
-        print("Press ENTER/RETURN to continue...")
-        input()
+        wait_for_it()
         exit()
 
     logging.debug("Profiles found:")
@@ -212,8 +215,7 @@ def main():
     this_message = "Script execution has completed. Load up a character and enjoy! Run as many times as you like."
     print_and_log([this_message])
 
-    print("Press ENTER/RETURN to continue...")
-    input()
+    wait_for_it()
 
 
 if __name__ == "__main__":
