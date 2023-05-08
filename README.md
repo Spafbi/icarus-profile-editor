@@ -20,7 +20,7 @@ and this will install the required modules.
 
 NOTE: Be sure to be using either PowerShell or a Command prompt when executing the Python version of this script; it will almost certainly fail with WSL.
 ## Windows executable
-Download [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe)
+Download [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe). Windows may complain when you go to download and run the executable. The file was fine when I uploaded it, but, as always, scan any executable downloads from the Internet before running them.
 
 # Usage
 NOTE: To help prevent potential complications, Icarus is required to be running and should be at the title screen when this utilty is used.
