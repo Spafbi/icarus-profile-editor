@@ -8,7 +8,7 @@ Got multiple Steam accounts? No worries - the script will show you a list of ava
 # Quick Start - Just Want Max Credits?
 Want to set all currencies and talent refund points to 999999 each? Here's the fastest way:
 
-1) Download [icarus-profile-editor.cmd](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-profile-editor.cmd) - it'll probably land in your Downloads folder.
+1) Download [icarus-profile-editor.cmd](https://github.com/spafbi/icarus-profile-editor/releases/latest/download/icarus-profile-editor.cmd) - it'll probably land in your Downloads folder.
 1) **Important:** Start Icarus and get to the main title screen before running the script. If you don't, here be dragons (meaning it may not work as expected...or at all).
 1) Press WIN+R to open the Run dialog and paste this command:
    ```cmd
@@ -23,7 +23,7 @@ Want more control over your currency values? This works just like the Quick Star
 
 **Important:** Start Icarus and get to the main title screen before running the script. If you don't, here be dragons (meaning it may not work as expected...or at all).
 
-1) Download [icarus-profile-editor.cmd](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-profile-editor.cmd) - it'll probably land in your Downloads folder.
+1) Download [icarus-profile-editor.cmd](https://github.com/spafbi/icarus-profile-editor/releases/latest/download/icarus-profile-editor.cmd) - it'll probably land in your Downloads folder.
 2) Press WIN+R to open the Run dialog and paste this command:
    ```cmd
    %USERPROFILE%\Downloads\icarus-profile-editor.cmd
