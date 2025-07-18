@@ -1,64 +1,58 @@
-# Icarus Credits, Exotics, and Talent Refund Points modification utility
-This utility updates Icarus profiles in the current Windows profile with new values for credits, exotics, and talent refund points.
+# Icarus Profile Editor
+A handy utility that finds and modifies your Icarus game profiles to boost your in-game currencies and talent refund points. Right now it handles currencies and talent points, but future versions will expand to unlock missions and blueprints too.
 
-This utility was created on Windows 11 using Python 3.11.3. It works for me, but your mileage may vary.
+Built with Windows 11 and good old-fashioned CMD scripting. If needed, this tool automatically downloads and installs [jq](https://jqlang.org/) (a JSON processor) via [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to handle all the profile file editing behind the scenes.
 
-The script does log actions taken, so you will be able to review the changes. See *Running with options*, below, to see how to enable more verbose logging.
-# Short Version -or- I don't want to read more stuff
-To set credits and exotics to 9999, and talent refund points to 30, download and run [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe)
+Got multiple Steam accounts? No worries - the script will show you a list of available profiles and let you pick which one to modify.
 
-NOTE: To help prevent potential complications, Icarus is required to be running and should be at the title screen when this utilty is used.
+# Quick Start - Just Want Max Credits?
+Want to set all currencies and talent refund points to 999999 each? Here's the fastest way:
 
--Enjoy!
-# Download types
-## Python script
-Just clone this reposity, or [download a zip](https://github.com/Spafbi/icarus-credits-modifier/archive/refs/heads/main.zip) of it, and execute the script using Python. Python 3.11.3 was used to create this script, and that's what the Pipfile expects. To set up the environment, navigate on your command-line to the directory where the script was copied/cloned, execute
-```cmd
-pipenv install
-```
-and this will install the required modules.
+1) Download [icarus-profile-editor.cmd](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-profile-editor.cmd) - it'll probably land in your Downloads folder.
+1) **Important:** Start Icarus and get to the main title screen before running the script. If you don't, here be dragons (meaning it may not work as expected...or at all).
+1) Press WIN+R to open the Run dialog and paste this command:
+   ```cmd
+   %USERPROFILE%\Downloads\icarus-profile-editor.cmd --max-currencies
+   ```
+1) Hit *Enter*
+1) You'll be prompted to select which profile you want to edit, and Bob's your uncle!
 
-NOTE: Be sure to be using either PowerShell or a Command prompt when executing the Python version of this script; it will almost certainly fail with WSL.
-## Windows executable
-Download [icarus-credits-modifier.exe](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-credits-modifier.exe). Windows may complain when you go to download and run the executable, and this is normal. Just tell your browser you want to keep the file. That said, the file was fine when I uploaded it, but, as always, scan any executable downloads from the Internet before running them.
+Enjoy your newfound riches! 💰
+# Detailed Instructions
+Want more control over your currency values? This works just like the Quick Start, but lets you see your current values and enter custom amounts instead of maxing everything out.
 
-# Usage
-NOTE: To help prevent potential complications, Icarus is required to be running and should be at the title screen when this utilty is used.
+**Important:** Start Icarus and get to the main title screen before running the script. If you don't, here be dragons (meaning it may not work as expected...or at all).
 
-## Running with defaults
-Defaults for values are set to:
- * Credits: 9999
- * Exotics: 9999
- * Talent refund points: 30
+1) Download [icarus-profile-editor.cmd](https://github.com/spafbi/icarus-credits-modifier/releases/latest/download/icarus-profile-editor.cmd) - it'll probably land in your Downloads folder.
+2) Press WIN+R to open the Run dialog and paste this command:
+   ```cmd
+   %USERPROFILE%\Downloads\icarus-profile-editor.cmd
+   ```
+3) Hit *Enter*
+4) Select which Steam profile you want to edit from the list
+5) The script will show your current currency values and prompt you to enter new ones
+6) Enter the amounts you want (or just press Enter to keep current values)
+7) Bob's your uncle!
 
-If that sounds good to you, just use one of the following execution methods:
-### EXE file
-Just download and execute the `icarus-credits-modifier.exe` file (link above) and you should be good to go!
-### Python script
-After setting up the environment (see *Python script* in the *Download types* section above)
-```cmd
-pipenv run python .\icarus-credits-modifier.py
-```
-## Running with options!
-You may also run the script with options! Here's the output from running with `-h` to show all available options:
+## Command Line Options
+Want to skip some of the prompts? You can run the script with these options:
+
 ```txt
-usage: icarus-credits-modifier.py [-h] [-c CREDITS] [-e EXOTICS] [-r REFUND] [-s STEAM] [-v]
-
-icarus-credits-modifier.py sets credits and exotics to 9999, and talent refund points to 30, for
-all Steam accounts located in %LOCALAPPDATA%\Icarus\Saved\PlayerData.
+usage: icarus-profile-editor.cmd [--max-currencies] [--unlock-all]
 
 options:
-  -h, --help            show this help message and exit
-  -c CREDITS, --credits CREDITS
-                        The amount of credits you want to have in game
-  -e EXOTICS, --exotics EXOTICS
-                        The amount of exotics you want to have in game
-  -r REFUND, --refund REFUND
-                        The number of talent refund credits you want to have
-  -s STEAM, --steam STEAM
-                        This option may be specified to alter a single account, identified by its
-                        SteamID64, for which you wish to set values. Omitting this option defaults
-                        to all SteamID64 accounts in %LOCALAPPDATA%\Icarus\Saved\PlayerData
-  -v, --verbose         Verbose logging
+  --max-currencies
+      Sets all currencies to 999999 without prompting for new values
+  --unlock-all
+      Unlocks all missions and blueprints (coming soon - not implemented yet)
 ```
-Of course, the directory/folder paths will appear different on your system.
+## Automatic Backups - We've Got You Covered!
+Every time the script modifies your profile, it automatically creates a backup copy of your `profile.json` file in the same folder (`%LOCALAPPDATA%\Icarus\Saved\PlayerData\<steamID64>\`). 
+
+The backup files are timestamped, so they'll look something like this:
+```
+Profile.json.Sun09-02-2025_08-20PM
+Profile.json.Fri07-18-2025_02-04PM
+```
+
+Feel free to delete these backup files once you've confirmed everything is working perfectly. They're just there for peace of mind!
