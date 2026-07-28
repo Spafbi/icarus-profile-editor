@@ -1,5 +1,6 @@
 @echo off
 set "profile_dir=%localappdata%\Icarus\Saved\PlayerData"
+set "currencies=Credits Exotic1 Exotic_Red Exotic_Uranium Refund Biomass Licence"
 
 :GETARGS
 @REM Set default values
@@ -30,10 +31,6 @@ for /f "tokens=*" %%i in ('time /t') do set "this_time=%%i"
 set "this_time=%this_time::=-%"
 set "this_time=%this_time: =%"
 set "timestamp=%this_date%_%this_time%"
-set "timestamp=%timestamp::=-%"
-set "timestamp=%timestamp:/=-%"
-set "timestamp=%timestamp:\=-%"
-set "timestamp=%timestamp: =%"
 exit /b 0
 @REM ########## End of Function: get_timestamp ##########
 
@@ -51,23 +48,6 @@ if not "%ERRORLEVEL%"=="0" (
 exit /b 0
 @REM ########## End of Function: check_icarus_process ##########
 
-:input
-setlocal enabledelayedexpansion
-set /p number=Please enter a number: 
-
-rem Check if the input is an integer and greater than or equal to zero
-for /f "delims=0123456789" %%a in ("!number!") do (
-    echo Please enter an integer with a value greater than or equal to zero.
-    goto input
-)
-
-if !number! lss 0 (
-    echo Please enter an integer with a value greater than or equal to zero.
-    goto input
-)
-
-echo You entered: !number!
-exit /b 0
 @REM ########## End of Function: input ##########
 
 :check_jq
@@ -79,19 +59,17 @@ for /f "delims=" %%i in ('where jq 2^>nul') do set "jq_path=%%i"
 if not defined jq_path (
     echo This script requires the 'jq' command-line JSON processor to be installed.
     echo jq was not found in your PATH
-    echo Removing jq to ensure latest...
-    echo   Executing: winget remove jqlang.jq
-    winget remove jqlang.jq
-    echo jq is not installed. Installing jq...
+    echo Installing jq...
     echo   Executing: winget install jqlang.jq
-    winget install jqlang.jq
-    for /f "delims=" %%i in ('where jq 2^>nul') do set "jq_path=%%i"
-    if not defined jq_path (
-        echo jq installation failed. Please install it manually.
-        exit /b 1
-    ) else (
-        echo jq installed successfully.
-    )
+    winget install jqlang.jq --accept-source-agreements --accept-package-agreements
+    echo.
+    echo The 'jq' installation is complete. Please close this window and re-run the script.
+    echo The script will now exit.
+    echo.
+    pause >nul
+    exit /b 1
+) else (
+    set "JQ_EXE=jq"
 )
 exit /b 0
 @REM ########## End of Function: check_jq ##########
@@ -157,7 +135,15 @@ for /l %%i in (0,1,31) do (
         )
     )
 )
-endlocal & set "player_name=%cleaned_name%"
+@REM Write cleaned name to temp file so it persists outside the setlocal block
+echo !cleaned_name! > temp_steam_name.txt
+endlocal & set "player_name="
+
+@REM Read the name from the temp file
+if exist temp_steam_name.txt (
+    for /f "delims=" %%a in (temp_steam_name.txt) do set "player_name=%%a"
+    del temp_steam_name.txt
+)
 
 echo %player_name%
 exit /b 0
@@ -208,23 +194,24 @@ goto :prompt_again
 @REM It extracts the currency types and their current values and assigns them to variables.
 
 setlocal enabledelayedexpansion
-set "currencies=Credits Exotic1 Exotic_Red Refund Biomass Licence"
+set "currencies=Credits Exotic1 Exotic_Red Exotic_Uranium Refund Biomass Licence"
 
 @REM Loop through each currency type
-for %%c in (%currencies%) do (
-    for /f "tokens=*" %%a in ('jq -r ".MetaResources[] | select(.MetaRow==\"%%c\") | .Count" "%profile_json%"') do (
-        set "current_%%c=%%a"
-        echo %%a > current_%%c.txt
+    for %%c in (%currencies%) do (
+        for /f "tokens=*" %%a in ('%JQ_EXE% -r ".MetaResources[] | select(.MetaRow==\"%%c\") | .Count" "%profile_json%"') do (
+            set "current_%%c=%%a"
+            echo %%a > current_%%c.txt
+        )
     )
-)
 
 @REM Display current values with proper labels
-set "label_Credits=Current Credits:     "
-set "label_Exotic1=Current Exotics:     "
-set "label_Exotic_Red=Current Red Exotics: "
-set "label_Refund=Current Refund:      "
-set "label_Biomass=Current Biomass:     "
-set "label_Licence=Current Licences:    "
+set "label_Credits=Current Ren:               "
+set "label_Exotic1=Current Exotics:           "
+set "label_Exotic_Red=Current Stabilized Exotic: "
+set "label_Exotic_Uranium=Current Uranium Rod:       "
+set "label_Refund=Current Refund:            "
+set "label_Biomass=Current Legendary Biomass: "
+set "label_Licence=Current Legendary Licence: "
 
 for %%c in (%currencies%) do (
     echo !label_%%c! !current_%%c!
@@ -248,13 +235,12 @@ exit /b 0
 @REM It validates the input to ensure it is a positive integer or empty, and assigns the values to new variables.
 
 setlocal enabledelayedexpansion
-set "currencies=Credits Exotic1 Exotic_Red Refund Biomass Licence"
+set "currencies=Credits Exotic1 Exotic_Red Exotic_Uranium Refund Biomass Licence"
 
 for %%c in (%currencies%) do (
     set "current_currency=%%c"
     set "current_var=current_%%c"
     set "new_var=new_%%c"
-    set "new_var=!new_var:~0,1!!new_var:~1!"
     set "current_value="
     
     @REM Read current value from the corresponding file
@@ -265,11 +251,20 @@ for %%c in (%currencies%) do (
 
     set "new_value="
 
+    @REM Set friendly names for display purposes
+    if "%%c"=="Credits" set "friendly_name=Ren"
+    if "%%c"=="Exotic1" set "friendly_name=Exotics"
+    if "%%c"=="Exotic_Red" set "friendly_name=Stabilized Exotic"
+    if "%%c"=="Exotic_Uranium" set "friendly_name=Uranium Rod"
+    if "%%c"=="Refund" set "friendly_name=Refund"
+    if "%%c"=="Biomass" set "friendly_name=Legendary Biomass"
+    if "%%c"=="Licence" set "friendly_name=Legendary Licence"
+
     if !max_currencies! neq 0 (
         set "new_value=!max_currencies!"
     ) else (
         :prompt_value
-        set /p "new_value=Enter new value for !current_currency! [!current_value!]: "
+        set /p "new_value=Enter new value for !friendly_name! [!current_value!]: "
         if "!new_value!"=="" set "new_value=!current_value!"
         for /f "delims=0123456789" %%a in ("!new_value!") do (
             echo Please enter an integer with a value greater than or equal to zero.
@@ -290,7 +285,7 @@ exit /b 0
 
 :load_new_values
 setlocal enabledelayedexpansion
-set "currencies=Credits Exotic1 Exotic_Red Refund Biomass Licence"
+set "currencies=Credits Exotic1 Exotic_Red Exotic_Uranium Refund Biomass Licence"
 
 @REM Load new values from files
 for %%c in (%currencies%) do (
@@ -311,6 +306,7 @@ endlocal & (
     set "new_Credits=%new_Credits%"
     set "new_Exotic1=%new_Exotic1%"
     set "new_Exotic_Red=%new_Exotic_Red%"
+    set "new_Exotic_Uranium=%new_Exotic_Uranium%"
     set "new_Refund=%new_Refund%"
     set "new_Biomass=%new_Biomass%"
     set "new_Licence=%new_Licence%"
@@ -328,7 +324,7 @@ call :get_timestamp
 set "backup_file=%profile_json%.%timestamp%"
 
 setlocal enabledelayedexpansion
-set "currencies=Credits Exotic1 Exotic_Red Refund Biomass Licence"
+set "currencies=Credits Exotic1 Exotic_Red Exotic_Uranium Refund Biomass Licence"
 set "temp_counter=1"
 
 @REM Create initial backup and first temp file
@@ -336,9 +332,16 @@ move "%profile_json%" "%backup_file%" >nul
 set "input_file=%backup_file%"
 
 @REM Loop through each currency and apply jq updates
-for %%c in (%currencies%) do (
-    set "output_file=temp!temp_counter!.json"
-    jq "if (.MetaResources ^| any(.MetaRow == \"%%c\")) then (.MetaResources[] ^| select(.MetaRow == \"%%c\") ^| .Count) ^|= !new_%%c! else .MetaResources += [{\"MetaRow\": \"%%c\", \"Count\": !new_%%c!}] end" "!input_file!" > "!output_file!"
+    for %%c in (%currencies%) do (
+        set "output_file=temp!temp_counter!.json"
+        %JQ_EXE% "if (.MetaResources ^| any(.MetaRow == \"%%c\")) then (.MetaResources[] ^| select(.MetaRow == \"%%c\") ^| .Count) ^|= !new_%%c! else .MetaResources += [{\"MetaRow\": \"%%c\", \"Count\": !new_%%c!}] end" "!input_file!" > "!output_file!"
+    
+    @REM Check if jq command succeeded
+    if %ERRORLEVEL% neq 0 (
+        echo Error: Failed to update currency %%c with value !new_%%c!
+        echo The profile file may be corrupted.
+        exit /b 1
+    )
     
     @REM Clean up previous temp file (except backup)
     if "!input_file!" neq "%backup_file%" del "!input_file!" >nul
@@ -353,7 +356,8 @@ move "!input_file!" "%profile_json%" >nul
 @REM Output the MetaResources block
 echo.
 echo "These are now the updated values in your selected profile:"
-jq ".MetaResources" "%profile_json%"
+%JQ_EXE% ".MetaResources" "%profile_json%"
+echo.
 
 endlocal
 exit /b 0
@@ -362,7 +366,7 @@ exit /b 0
 
 :start_editing
 @REM Make sure jq is installed
-call :check_jq || if not "%ERRORLEVEL%"=="0" exit /b %ERRORLEVEL%
+call :check_jq || exit /b 1
 
 @REM Make sure Icarus is running
 call :check_icarus_process || exit /b %ERRORLEVEL%
@@ -381,6 +385,13 @@ del temp_selected_profile.txt
 for /f "tokens=* delims=" %%a in ("%this_profile%") do set "this_profile=%%a"
 set "this_profile=%this_profile: =%"
 set "profile_json=%profile_dir%\%this_profile%\Profile.json"
+
+@REM Validate that the profile JSON file exists before editing
+if not exist "%profile_json%" (
+    echo Profile file does not exist: %profile_json%
+    echo Exiting...
+    exit /b 1
+)
 
 echo. & echo Editing profile file: %profile_json%
 
@@ -407,4 +418,30 @@ echo.
 echo A backup of your profile JSON file has been created with a timestamp here:
 echo %backup_file%
 echo.
-timeout /t 120
+
+:display_new_currency_names
+@REM Display updated currency names by reading from the profile JSON
+setlocal enabledelayedexpansion
+set "currencies=Credits Exotic1 Exotic_Red Exotic_Uranium Refund Biomass Licence"
+for %%c in (%currencies%) do (
+    set "current_value=0"
+    @REM Read directly from the profile JSON file using jq
+    for /f "tokens=*" %%a in ('%JQ_EXE% -r ".MetaResources[] | select(.MetaRow==\"%%c\") | .Count" "%profile_json%"') do (
+        set "current_value=%%a"
+    )
+    
+    @REM Set friendly names for display purposes
+    if "%%c"=="Credits" set "friendly_name=Ren:              "
+    if "%%c"=="Exotic1" set "friendly_name=Exotics:          "
+    if "%%c"=="Exotic_Red" set "friendly_name=Stabilized Exotic:"
+    if "%%c"=="Exotic_Uranium" set "friendly_name=Uranium Rod:      "
+    if "%%c"=="Refund" set "friendly_name=Refund:           "
+    if "%%c"=="Biomass" set "friendly_name=Legendary Biomass:"
+    if "%%c"=="Licence" set "friendly_name=Legendary Licence:"
+    
+    echo !friendly_name! !current_value!
+)
+endlocal
+echo.
+echo Press any key to exit, or wait 30 seconds...
+timeout /t 30 > nul
