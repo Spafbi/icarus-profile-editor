@@ -7,35 +7,15 @@ if exist "%~dp0icarus-profile-editor.ps1" (
     goto run_script
 )
 
-:: File doesn't exist, download from latest GitHub release
 echo Downloading latest icarus-profile-editor.ps1 from GitHub...
-curl -s -L "https://api.github.com/repos/Spafbi/icarus-profile-editor/releases/latest" -o "%~dp0latest_release.json"
+
+:: Use PowerShell with properly escaped single quotes (known working approach)
+powershell -Command "try { $r = Invoke-RestMethod 'https://api.github.com/repos/Spafbi/icarus-profile-editor/releases/latest'; $a = $r.assets | Where-Object { $_.name -eq 'icarus-profile-editor.ps1' }; if ($a) { Invoke-WebRequest -Uri $a.browser_download_url -OutFile '%~dp0icarus-profile-editor.ps1'; Write-Host 'Download completed successfully.'; } else { Write-Host 'Could not find icarus-profile-editor.ps1 in release assets.'; exit 1; } } catch { Write-Host 'Error: $_'; exit 1; }"
+
 if %ERRORLEVEL% NEQ 0 (
-    echo Failed to download release information from GitHub
+    echo Error: Failed to download icarus-profile-editor.ps1 from GitHub
     exit /b 1
 )
-
-:: Extract the download URL for the ps1 file using PowerShell
-powershell -Command ^
-$release = Get-Content "%~dp0latest_release.json" | ConvertFrom-Json; ^
-$asset = $release.assets | Where-Object { $_.name -eq "icarus-profile-editor.ps1" }; ^
-if ($asset) { ^
-    $download_url = $asset.browser_download_url; ^
-    curl -L -o "%~dp0icarus-profile-editor.ps1" $download_url; ^
-    if (%ERRORLEVEL% EQU 0) { ^
-        echo Download completed successfully. ^
-        del "%~dp0latest_release.json" ^
-        goto run_script ^
-    } else { ^
-        echo Failed to download icarus-profile-editor.ps1 from GitHub ^
-        del "%~dp0latest_release.json" ^
-        exit /b 1 ^
-    } ^
-} else { ^
-    echo Could not find icarus-profile-editor.ps1 in the latest release assets ^
-    del "%~dp0latest_release.json" ^
-    exit /b 1 ^
-}
 
 :run_script
 powershell -ExecutionPolicy Bypass -File "%~dp0icarus-profile-editor.ps1"
